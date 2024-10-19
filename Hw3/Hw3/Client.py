@@ -3,7 +3,7 @@ import threading
 import os
 
 HOST = '127.0.0.1' 
-PORT = 6000       
+PORT = 6002       
 BUFFER_SIZE = 1024
 
 def handle_server(server_socket):
