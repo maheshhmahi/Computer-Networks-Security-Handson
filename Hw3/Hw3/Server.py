@@ -4,7 +4,7 @@ import os
 
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
-PORT = 12345        # Arbitrary non-privileged port
+PORT = 6000        # Arbitrary non-privileged port
 BUFFER_SIZE = 1024
 FILE_DIRECTORY = 'received_files'  # Directory to store received files
 
@@ -34,6 +34,9 @@ def handle_client(client_socket):
                                     break
                                 file.write(chunk)
                         print(f"File {filename} received from client.")
+                        client_socket.send("File received successfully.".encode())
+                    else:
+                        client_socket.send("Message received.".encode())
             except Exception as e:
                 print(f"Error: {e}")
                 client_socket.close()

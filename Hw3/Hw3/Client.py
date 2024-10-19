@@ -4,7 +4,7 @@ import os
 
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
-PORT = 12345        # Arbitrary non-privileged port
+PORT = 6000        # Arbitrary non-privileged port
 BUFFER_SIZE = 1024
 
 # Function to handle server messages
@@ -27,13 +27,12 @@ def handle_server(server_socket):
                 message = input("Client: ")
                 if message == "EXIT":
                     break
-                client_socket.send(message.encode())
-
-                # Check if file transfer is requested
-                if message.startswith("FILE:"):
+                elif message.startswith("FILE:"):
                     filename = message[5:]
-                    file_path = os.path.join(os.getcwd(), filename)
+                    file_path = input("Enter file path: ")
+
                     if os.path.exists(file_path):
+                        server_socket.send(f"FILE:{os.path.basename(filename)}".encode())
                         with open(file_path, 'rb') as file:
                             chunk = file.read(BUFFER_SIZE)
                             while chunk:
@@ -41,8 +40,12 @@ def handle_server(server_socket):
                                 chunk = file.read(BUFFER_SIZE)
                         server_socket.send(b'DONE')
                         print(f"File {filename} sent to server.")
+                        server_socket.recv(BUFFER_SIZE).decode()  # Wait for server response
                     else:
                         print("File not found.")
+                else:
+                    server_socket.send(message.encode())
+                    server_socket.recv(BUFFER_SIZE).decode()  # Wait for server response
             except Exception as e:
                 print(f"Error: {e}")
                 server_socket.close()
