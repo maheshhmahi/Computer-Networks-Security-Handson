@@ -2,27 +2,22 @@ import socket
 import threading
 import os
 
-# Server configuration
-HOST = '127.0.0.1'  # Localhost
-PORT = 6000        # Arbitrary non-privileged port
+HOST = '127.0.0.1'  
+PORT = 6000       
 BUFFER_SIZE = 1024
-FILE_DIRECTORY = 'received_files'  # Directory to store received files
+FILE_DIRECTORY = 'received_files' 
 
-# Create directory to store received files if it doesn't exist
 if not os.path.exists(FILE_DIRECTORY):
     os.makedirs(FILE_DIRECTORY)
 
-# Function to handle client connections
 def handle_client(client_socket):
     def receive_messages():
         while True:
             try:
-                # Receive message from client
                 message = client_socket.recv(BUFFER_SIZE).decode()
                 if message:
                     print(f"Client: {message}")
 
-                    # Check if file transfer is requested
                     if message.startswith("FILE:"):
                         filename = message[5:]
                         file_path = os.path.join(FILE_DIRECTORY, filename)
@@ -59,7 +54,7 @@ def handle_client(client_socket):
     receive_thread.start()
     send_thread.start()
 
-# Create server socket
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((HOST, PORT))
 server_socket.listen(5)
